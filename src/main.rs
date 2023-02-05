@@ -1,4 +1,5 @@
 use core::time;
+use notify_rust::Notification;
 use serde::Deserialize;
 use std::collections::HashSet;
 
@@ -30,6 +31,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for q in &questions.items {
                 if !question_ids.contains(&q.question_id) {
                     println!("{}\n{}\n{}\n", q.title, q.link, q.question_id);
+                    desktop_notification(&q.title, &q.link);
                 }
             }
         }
@@ -41,4 +43,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         std::thread::sleep(time::Duration::from_millis(60_000));
     }
+}
+
+fn desktop_notification(summary: &str, link: &str) {
+    Notification::new()
+        .summary(summary)
+        .body(link)
+        .icon("hint")
+        .show()
+        .expect("Notification must be sent");
 }
