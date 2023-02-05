@@ -19,12 +19,24 @@ struct Question {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut question_ids = HashSet::new();
+
     loop {
         let resp = reqwest::blocking::get(SO_URL.to_owned() + TAG)?.text()?;
 
         let questions = serde_json::from_str::<Root>(&resp).unwrap();
+
+        if !question_ids.is_empty() {
+            for q in &questions.items {
+                if !question_ids.contains(&q.question_id) {
+                    println!("{}\n{}\n{}\n", q.title, q.link, q.question_id);
+                }
+            }
+        }
+
+        question_ids.clear();
         for q in questions.items {
-            println!("{}\n{}\n{}\n", q.title, q.link, q.question_id);
+            question_ids.insert(q.question_id);
         }
 
         std::thread::sleep(time::Duration::from_millis(60_000));
