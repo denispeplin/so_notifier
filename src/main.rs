@@ -1,5 +1,5 @@
 use core::time;
-use notify_rust::Notification;
+use notify_rust::{Notification, Urgency};
 use serde::Deserialize;
 use std::collections::HashSet;
 
@@ -50,6 +50,7 @@ fn desktop_notification(summary: &str, link: &str) {
         .summary(summary)
         .body(link)
         .icon("hint")
+        .urgency(Urgency::Critical)
         .show()
         .expect("Notification must be sent");
 }
