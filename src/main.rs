@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     loop {
         let resp = reqwest::blocking::get(SO_URL.to_owned() + TAG)?.text()?;
 
-        let questions = serde_json::from_str::<Root>(&resp).unwrap();
+        let questions = serde_json::from_str::<Root>(&resp).expect(&resp);
 
         if !question_ids.is_empty() {
             for q in &questions.items {
