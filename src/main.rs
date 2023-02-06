@@ -10,6 +10,8 @@ const TAG: &str = "rust";
 #[derive(Deserialize, Debug)]
 struct Root {
     items: Vec<Question>,
+    quota_max: u32,
+    quota_remaining: u32,
 }
 
 #[derive(Deserialize, Debug)]
@@ -26,6 +28,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let resp = reqwest::blocking::get(SO_URL.to_owned() + TAG)?.text()?;
 
         let questions = serde_json::from_str::<Root>(&resp).expect(&resp);
+
+        println!(
+            "Quota max: {}, quota remaining: {}",
+            questions.quota_max, questions.quota_remaining
+        );
 
         if !question_ids.is_empty() {
             for q in &questions.items {
