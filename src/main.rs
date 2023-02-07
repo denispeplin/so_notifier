@@ -35,9 +35,18 @@ fn query_args() -> Vec<(&'static str, &'static str)> {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut question_ids = HashSet::new();
     let client = reqwest::blocking::Client::builder().build()?;
+    let mut query_args = query_args();
+    let auth_key;
+    if let Ok(env_var) = std::env::var("SO_NOTIFY_AUTH_KEY") {
+        // This probably deserve a question on SO: while I solved
+        // the issue with env_var lifetime (&str is required in query_args),
+        // the solution looks suboptimal
+        auth_key = env_var;
+        query_args.push(("key", &auth_key));
+    };
 
     loop {
-        let resp = client.get(SO_URL).query(&query_args()).send()?.text()?;
+        let resp = client.get(SO_URL).query(&query_args).send()?.text()?;
 
         let questions = serde_json::from_str::<Root>(&resp).expect(&resp);
 
