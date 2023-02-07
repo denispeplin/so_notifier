@@ -3,7 +3,7 @@ use notify_rust::{Notification, Urgency};
 use serde::Deserialize;
 use std::collections::HashSet;
 
-const SO_URL: &str = "https://api.stackexchange.com/2.3/questions?page=1&pagesize=10&order=desc&sort=creation&site=stackoverflow&tagged=";
+const SO_URL: &str = "https://api.stackexchange.com/2.3/questions";
 // the tag is hardcoded for now to `rust`
 const TAG: &str = "rust";
 
@@ -21,11 +21,23 @@ struct Question {
     question_id: u32,
 }
 
+fn query_args() -> Vec<(&'static str, &'static str)> {
+    vec![
+        ("page", "1"),
+        ("pagesize", "10"),
+        ("order", "desc"),
+        ("sort", "creation"),
+        ("site", "stackoverflow"),
+        ("tagged", TAG),
+    ]
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut question_ids = HashSet::new();
+    let client = reqwest::blocking::Client::builder().build()?;
 
     loop {
-        let resp = reqwest::blocking::get(SO_URL.to_owned() + TAG)?.text()?;
+        let resp = client.get(SO_URL).query(&query_args()).send()?.text()?;
 
         let questions = serde_json::from_str::<Root>(&resp).expect(&resp);
 
