@@ -57,3 +57,12 @@ so to use this app in full, follow these instructions:
    is not needed.
    Once it's registered, get `Key` from the page with the application
    credentials.
+
+### TODO
+
+- Handle timeout errors from Reqwest
+- Organize code better and add tests
+- Simplify the algorithm for finding new questions
+- Provide Dockerfile
+- Add Github CI configurationa and the badge
+- Handle no-show errors in notify-rust library (stop waiting for it after some timeout)
