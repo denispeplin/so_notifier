@@ -46,9 +46,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     loop {
-        let resp = client.get(SO_URL).query(&query_args).send()?.text()?;
+        let resp = client.get(SO_URL).query(&query_args).send();
+        let text_resp;
 
-        let questions = serde_json::from_str::<Root>(&resp).expect(&resp);
+        match resp {
+            Ok(value) => text_resp = value.text()?,
+            Err(e) if e.is_timeout() => {
+                println!("Request timed out, retrying...");
+                continue;
+            }
+            Err(e) => return Err(Box::new(e)),
+        }
+
+        let questions = serde_json::from_str::<Root>(&text_resp).expect(&text_resp);
 
         println!(
             "Quota max: {}, quota remaining: {}",

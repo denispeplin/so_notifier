@@ -60,7 +60,6 @@ so to use this app in full, follow these instructions:
 
 ### TODO
 
-- Handle timeout errors from Reqwest
 - Organize code better and add tests
 - Simplify the algorithm for finding new questions
 - Provide Dockerfile
