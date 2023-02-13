@@ -61,12 +61,16 @@ fn get_text_response() -> Result<String, Box<dyn std::error::Error>> {
     }
 }
 
+fn decode_questions(text_resp: String) -> Root {
+    serde_json::from_str::<Root>(&text_resp).expect(&text_resp)
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut question_ids = HashSet::new();
 
     loop {
         let text_resp = get_text_response()?;
-        let questions = serde_json::from_str::<Root>(&text_resp).expect(&text_resp);
+        let questions = decode_questions(text_resp);
 
         println!(
             "Quota max: {}, quota remaining: {}",
