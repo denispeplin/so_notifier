@@ -7,25 +7,23 @@ about new questions only.
 
 ### The algorithm
 
-The notification algorithm uses two vectors and one HashSet:
-One vector to store records that were just retrieved,
-another to store new ones and
-a HashSet to store question IDs from the previous run between
-runs.
+Question IDs are incremental, that makes finding new
+questions an easy task.
+The notification algorithm uses two vectors and one `u32`
+number containing the latest question ID that is
+stored between runs.
 
 It is meant to be running in a loop and execute the following steps:
 
 - Get latest 10 questions of a particular tag
 - Save them into an vector of a freshly retrieved records
-- If the HashSet is empty,
-- Collect only new records into another vector, basing on
-  contents of the HashSet.
-    - if the HashSet is empty (means it's the first run)
-      set the vector of new records to be empty
-    - Otherwise, fill it with the new records
-      (IDs of those are not in the HashSet)
+- Copy new records (those IDs are greater than the latest
+  question ID) into another vector of new questions
+    - if the latest question id equals to its initial value of
+      `u32::MAX` (means it's the first run), no new questions
+      would be collected
 - Go through the new questions and send notifications
-- Put the freshly retrieved question IDs into the HashSet
+- Update the value of the latest question ID
 - Wait one minute before continuing the loop
 
 ### Build

@@ -1,7 +1,6 @@
 use core::time;
 use notify_rust::{Notification, Urgency};
 use serde::Deserialize;
-use std::collections::HashSet;
 
 const SO_URL: &str = "https://api.stackexchange.com/2.3/questions";
 // the tag is hardcoded for now to `rust`
@@ -66,7 +65,9 @@ fn decode_questions(text_resp: String) -> Root {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut question_ids = HashSet::new();
+    // it's a trick so on the first run none of
+    // the questions would be considered new
+    let mut latest_question_id = u32::MAX;
 
     loop {
         let text_resp = get_text_response()?;
@@ -77,25 +78,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             questions.quota_max, questions.quota_remaining
         );
 
-        let new_questions = if question_ids.is_empty() {
-            Vec::new()
-        } else {
-            questions
-                .items
-                .iter()
-                .filter(|q| !question_ids.contains(&q.question_id))
-                .collect()
-        };
+        let new_questions = questions
+            .items
+            .iter()
+            .filter(|q| q.question_id > latest_question_id)
+            .collect::<Vec<&Question>>();
 
         for q in new_questions {
             println!("{}\n{}\n{}\n", q.title, q.link, q.question_id);
             desktop_notification(&q.title, &q.link);
         }
 
-        question_ids.clear();
-        for q in questions.items {
-            question_ids.insert(q.question_id);
-        }
+        // questions are coming from API reverse sorted by ID
+        latest_question_id = questions.items[0].question_id;
 
         std::thread::sleep(time::Duration::from_millis(60_000));
     }
