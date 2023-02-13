@@ -64,6 +64,15 @@ fn decode_questions(text_resp: String) -> Root {
     serde_json::from_str::<Root>(&text_resp).expect(&text_resp)
 }
 
+fn new_questions(questions: &Root, latest_question_id: u32) -> Vec<&Question> {
+    questions
+        .items
+        .iter()
+        .filter(|q| q.question_id > latest_question_id)
+        .map(|q| q.clone())
+        .collect::<Vec<&Question>>()
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // it's a trick so on the first run none of
     // the questions would be considered new
@@ -78,11 +87,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             questions.quota_max, questions.quota_remaining
         );
 
-        let new_questions = questions
-            .items
-            .iter()
-            .filter(|q| q.question_id > latest_question_id)
-            .collect::<Vec<&Question>>();
+        let new_questions = new_questions(&questions, latest_question_id);
 
         for q in new_questions {
             println!("{}\n{}\n{}\n", q.title, q.link, q.question_id);
