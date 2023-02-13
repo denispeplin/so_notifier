@@ -21,21 +21,18 @@ struct Question {
     question_id: u32,
 }
 
-fn query_args() -> Vec<(&'static str, &'static str)> {
-    vec![
+fn client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::error::Error>> {
+    let client = reqwest::blocking::Client::builder().build()?;
+
+    let mut query_args = vec![
         ("page", "1"),
         ("pagesize", "10"),
         ("order", "desc"),
         ("sort", "creation"),
         ("site", "stackoverflow"),
         ("tagged", TAG),
-    ]
-}
+    ];
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut question_ids = HashSet::new();
-    let client = reqwest::blocking::Client::builder().build()?;
-    let mut query_args = query_args();
     let auth_key;
     if let Ok(env_var) = std::env::var("SO_NOTIFY_AUTH_KEY") {
         // This probably deserve a question on SO: while I solved
@@ -45,8 +42,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         query_args.push(("key", &auth_key));
     };
 
+    Ok(client.get(SO_URL).query(&query_args))
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut question_ids = HashSet::new();
+
     loop {
-        let resp = client.get(SO_URL).query(&query_args).send();
+        let resp = client()?.send();
         let text_resp;
 
         match resp {
