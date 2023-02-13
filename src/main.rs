@@ -77,13 +77,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             questions.quota_max, questions.quota_remaining
         );
 
-        if !question_ids.is_empty() {
-            for q in &questions.items {
-                if !question_ids.contains(&q.question_id) {
-                    println!("{}\n{}\n{}\n", q.title, q.link, q.question_id);
-                    desktop_notification(&q.title, &q.link);
-                }
-            }
+        let new_questions = if question_ids.is_empty() {
+            Vec::new()
+        } else {
+            questions
+                .items
+                .iter()
+                .filter(|q| !question_ids.contains(&q.question_id))
+                .collect()
+        };
+
+        for q in new_questions {
+            println!("{}\n{}\n{}\n", q.title, q.link, q.question_id);
+            desktop_notification(&q.title, &q.link);
         }
 
         question_ids.clear();

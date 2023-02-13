@@ -7,8 +7,9 @@ about new questions only.
 
 ### The algorithm
 
-The notification algorithm uses one vector and one HashSet:
-the vector to store records that were just retrieved and
+The notification algorithm uses two vectors and one HashSet:
+One vector to store records that were just retrieved,
+another to store new ones and
 a HashSet to store question IDs from the previous run between
 runs.
 
@@ -16,9 +17,14 @@ It is meant to be running in a loop and execute the following steps:
 
 - Get latest 10 questions of a particular tag
 - Save them into an vector of a freshly retrieved records
-- Check if the HashSet has some question IDs
-    - If it has, send notifications about the new records
-    - Otherwise (means it's the first run), go to the next step
+- If the HashSet is empty,
+- Collect only new records into another vector, basing on
+  contents of the HashSet.
+    - if the HashSet is empty (means it's the first run)
+      set the vector of new records to be empty
+    - Otherwise, fill it with the new records
+      (IDs of those are not in the HashSet)
+- Go through the new questions and send notifications
 - Put the freshly retrieved question IDs into the HashSet
 - Wait one minute before continuing the loop
 
