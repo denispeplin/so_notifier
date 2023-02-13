@@ -45,22 +45,27 @@ fn client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::error::Err
     Ok(client.get(SO_URL).query(&query_args))
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut question_ids = HashSet::new();
-
+fn get_text_response() -> Result<String, Box<dyn std::error::Error>> {
     loop {
-        let resp = client()?.send();
-        let text_resp;
+        let resp = client().expect("Can't build 'reqwest' client").send();
 
         match resp {
-            Ok(value) => text_resp = value.text()?,
+            Ok(value) => return Ok(value.text().expect("Can't get text response")),
             Err(e) if e.is_timeout() => {
                 println!("Request timed out, retrying...");
+                std::thread::sleep(time::Duration::from_millis(10_000));
                 continue;
             }
             Err(e) => return Err(Box::new(e)),
         }
+    }
+}
 
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut question_ids = HashSet::new();
+
+    loop {
+        let text_resp = get_text_response()?;
         let questions = serde_json::from_str::<Root>(&text_resp).expect(&text_resp);
 
         println!(
