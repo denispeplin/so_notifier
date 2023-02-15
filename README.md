@@ -65,6 +65,7 @@ so to use this app in full, follow these instructions:
 ### TODO
 
 - Organize code better and add tests
+- Handle more networking errors gracefully
 - Provide Dockerfile
 - Add Github CI configurationa and the badge
 - Handle no-show errors in notify-rust library (stop waiting for it after some timeout)
