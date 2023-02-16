@@ -5,6 +5,10 @@ pub mod decoder;
 pub mod notifications;
 pub mod questions;
 
+// the loop timeout must be no shorter than 1 minute
+// shorter timeouts would be considered an abuse by API
+const LOOP_TIMEOUT_MINS: u64 = 1;
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // it's a trick so on the first run none of
     // the questions would be considered new
@@ -24,6 +28,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             notifications::desktop::send(&q.title, &q.link);
         }
 
-        std::thread::sleep(time::Duration::from_millis(60_000));
+        std::thread::sleep(time::Duration::from_secs(LOOP_TIMEOUT_MINS * 60));
     }
 }
