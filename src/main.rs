@@ -14,7 +14,7 @@ struct Root {
 }
 
 #[derive(Deserialize, Debug)]
-struct Question {
+pub struct Question {
     title: String,
     link: String,
     #[serde(rename = "question_id")]
@@ -65,13 +65,7 @@ fn decode_questions(text_resp: String) -> Root {
     serde_json::from_str::<Root>(&text_resp).expect(&text_resp)
 }
 
-fn new_questions(questions: &Vec<Question>, latest_question_id: u32) -> Vec<&Question> {
-    questions
-        .iter()
-        .filter(|q| q.id > latest_question_id)
-        .map(|q| q.clone())
-        .collect::<Vec<&Question>>()
-}
+pub mod questions;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // it's a trick so on the first run none of
@@ -88,7 +82,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             root.quota_max, root.quota_remaining
         );
 
-        let new_questions = new_questions(&questions, latest_question_id);
+        let new_questions = questions::list_new(&questions, latest_question_id);
 
         for q in new_questions {
             println!("{}\n{}\n{}\n", q.title, q.link, q.id);
