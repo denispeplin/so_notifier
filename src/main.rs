@@ -65,9 +65,8 @@ fn decode_questions(text_resp: String) -> Root {
     serde_json::from_str::<Root>(&text_resp).expect(&text_resp)
 }
 
-fn new_questions(questions: &Root, latest_question_id: u32) -> Vec<&Question> {
+fn new_questions(questions: &Vec<Question>, latest_question_id: u32) -> Vec<&Question> {
     questions
-        .items
         .iter()
         .filter(|q| q.id > latest_question_id)
         .map(|q| q.clone())
@@ -81,11 +80,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     loop {
         let text_resp = get_text_response()?;
-        let questions = decode_questions(text_resp);
+        let root = decode_questions(text_resp);
+        let questions = root.items;
 
         println!(
             "Quota max: {}, quota remaining: {}",
-            questions.quota_max, questions.quota_remaining
+            root.quota_max, root.quota_remaining
         );
 
         let new_questions = new_questions(&questions, latest_question_id);
@@ -96,7 +96,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         // questions are coming from API reverse sorted by ID
-        latest_question_id = questions.items[0].id;
+        latest_question_id = questions[0].id;
 
         std::thread::sleep(time::Duration::from_millis(60_000));
     }
