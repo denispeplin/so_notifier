@@ -1,4 +1,12 @@
-use crate::Question;
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug)]
+pub struct Question {
+    pub title: String,
+    pub link: String,
+    #[serde(rename = "question_id")]
+    pub id: u32,
+}
 
 pub fn list_new(questions: &Vec<Question>, latest_question_id: u32) -> Vec<&Question> {
     questions

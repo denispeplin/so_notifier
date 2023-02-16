@@ -2,6 +2,8 @@ use core::time;
 use notify_rust::{Notification, Urgency};
 use serde::Deserialize;
 
+use questions::Question;
+
 const SO_URL: &str = "https://api.stackexchange.com/2.3/questions";
 // the tag is hardcoded for now to `rust`
 const TAG: &str = "rust";
@@ -11,14 +13,6 @@ struct Root {
     items: Vec<Question>,
     quota_max: u32,
     quota_remaining: u32,
-}
-
-#[derive(Deserialize, Debug)]
-pub struct Question {
-    title: String,
-    link: String,
-    #[serde(rename = "question_id")]
-    id: u32,
 }
 
 fn client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::error::Error>> {
