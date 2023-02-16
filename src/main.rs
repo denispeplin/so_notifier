@@ -17,7 +17,8 @@ struct Root {
 struct Question {
     title: String,
     link: String,
-    question_id: u32,
+    #[serde(rename = "question_id")]
+    id: u32,
 }
 
 fn client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::error::Error>> {
@@ -68,7 +69,7 @@ fn new_questions(questions: &Root, latest_question_id: u32) -> Vec<&Question> {
     questions
         .items
         .iter()
-        .filter(|q| q.question_id > latest_question_id)
+        .filter(|q| q.id > latest_question_id)
         .map(|q| q.clone())
         .collect::<Vec<&Question>>()
 }
@@ -90,12 +91,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let new_questions = new_questions(&questions, latest_question_id);
 
         for q in new_questions {
-            println!("{}\n{}\n{}\n", q.title, q.link, q.question_id);
+            println!("{}\n{}\n{}\n", q.title, q.link, q.id);
             desktop_notification(&q.title, &q.link);
         }
 
         // questions are coming from API reverse sorted by ID
-        latest_question_id = questions.items[0].question_id;
+        latest_question_id = questions.items[0].id;
 
         std::thread::sleep(time::Duration::from_millis(60_000));
     }
