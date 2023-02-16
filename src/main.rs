@@ -1,20 +1,7 @@
 use core::time;
-use serde::Deserialize;
-
-use questions::Question;
-
-#[derive(Deserialize, Debug)]
-struct Root {
-    items: Vec<Question>,
-    quota_max: u32,
-    quota_remaining: u32,
-}
-
-fn decode_questions(text_resp: String) -> Root {
-    serde_json::from_str::<Root>(&text_resp).expect(&text_resp)
-}
 
 pub mod api_client;
+pub mod decoder;
 pub mod notifications;
 pub mod questions;
 
@@ -25,13 +12,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     loop {
         let text_resp = api_client::get_text_response()?;
-        let root = decode_questions(text_resp);
+        let root = decoder::decode_questions(text_resp);
         let questions = root.items;
-
-        println!(
-            "Quota max: {}, quota remaining: {}",
-            root.quota_max, root.quota_remaining
-        );
 
         let new_questions = questions::list_new(&questions, latest_question_id);
 
