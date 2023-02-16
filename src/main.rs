@@ -84,13 +84,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let new_questions = questions::list_new(&questions, latest_question_id);
 
+        latest_question_id = questions::latest_id(&questions);
+
         for q in new_questions {
             println!("{}\n{}\n{}\n", q.title, q.link, q.id);
             desktop_notification(&q.title, &q.link);
         }
-
-        // questions are coming from API reverse sorted by ID
-        latest_question_id = questions[0].id;
 
         std::thread::sleep(time::Duration::from_millis(60_000));
     }
