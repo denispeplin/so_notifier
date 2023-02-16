@@ -68,3 +68,4 @@ so to use this app in full, follow these instructions:
 - Handle more networking errors gracefully
 - Provide Dockerfile
 - Add Github CI configurationa and the badge
+- Add instruction for autostarting the app
