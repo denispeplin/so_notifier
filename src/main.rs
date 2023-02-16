@@ -1,5 +1,4 @@
 use core::time;
-use notify_rust::{Notification, Urgency};
 use serde::Deserialize;
 
 use questions::Question;
@@ -16,6 +15,7 @@ fn decode_questions(text_resp: String) -> Root {
 }
 
 pub mod api_client;
+pub mod notifications;
 pub mod questions;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -39,22 +39,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         for q in new_questions {
             println!("{}\n{}\n{}\n", q.title, q.link, q.id);
-            desktop_notification(&q.title, &q.link);
+            notifications::desktop::send(&q.title, &q.link);
         }
 
         std::thread::sleep(time::Duration::from_millis(60_000));
     }
-}
-
-fn desktop_notification(summary: &str, link: &str) {
-    let handle = Notification::new()
-        .summary(summary)
-        .body(link)
-        .icon("hint")
-        .urgency(Urgency::Critical)
-        .show()
-        .expect("Notification must be sent");
-
-    // won't show the next notification until the previous one is clicked on
-    handle.wait_for_action(|_action| ());
 }
