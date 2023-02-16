@@ -4,10 +4,6 @@ use serde::Deserialize;
 
 use questions::Question;
 
-const SO_URL: &str = "https://api.stackexchange.com/2.3/questions";
-// the tag is hardcoded for now to `rust`
-const TAG: &str = "rust";
-
 #[derive(Deserialize, Debug)]
 struct Root {
     items: Vec<Question>,
@@ -15,50 +11,11 @@ struct Root {
     quota_remaining: u32,
 }
 
-fn client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::error::Error>> {
-    let client = reqwest::blocking::Client::builder().build()?;
-
-    let mut query_args = vec![
-        ("page", "1"),
-        ("pagesize", "10"),
-        ("order", "desc"),
-        ("sort", "creation"),
-        ("site", "stackoverflow"),
-        ("tagged", TAG),
-    ];
-
-    let auth_key;
-    if let Ok(env_var) = std::env::var("SO_NOTIFY_AUTH_KEY") {
-        // This probably deserve a question on SO: while I solved
-        // the issue with env_var lifetime (&str is required in query_args),
-        // the solution looks suboptimal
-        auth_key = env_var;
-        query_args.push(("key", &auth_key));
-    };
-
-    Ok(client.get(SO_URL).query(&query_args))
-}
-
-fn get_text_response() -> Result<String, Box<dyn std::error::Error>> {
-    loop {
-        let resp = client().expect("Can't build 'reqwest' client").send();
-
-        match resp {
-            Ok(value) => return Ok(value.text().expect("Can't get text response")),
-            Err(e) if e.is_timeout() => {
-                println!("Request timed out, retrying...");
-                std::thread::sleep(time::Duration::from_millis(10_000));
-                continue;
-            }
-            Err(e) => return Err(Box::new(e)),
-        }
-    }
-}
-
 fn decode_questions(text_resp: String) -> Root {
     serde_json::from_str::<Root>(&text_resp).expect(&text_resp)
 }
 
+pub mod api_client;
 pub mod questions;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -67,7 +24,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut latest_question_id = u32::MAX;
 
     loop {
-        let text_resp = get_text_response()?;
+        let text_resp = api_client::get_text_response()?;
         let root = decode_questions(text_resp);
         let questions = root.items;
 
