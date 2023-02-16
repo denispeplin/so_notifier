@@ -24,7 +24,13 @@ pub fn get_text_response() -> Result<String, Box<dyn std::error::Error>> {
 
 fn reqwest_client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::error::Error>> {
     let client = reqwest::blocking::Client::builder().build()?;
+    let auth_key = std::env::var("SO_NOTIFY_AUTH_KEY").unwrap_or_default();
+    let query_args = query_args(&auth_key);
 
+    Ok(client.get(SO_URL).query(&query_args))
+}
+
+fn query_args<'a>(auth_key: &'a String) -> Vec<(&'static str, &'a str)> {
     let mut query_args = vec![
         ("page", "1"),
         ("pagesize", "10"),
@@ -34,14 +40,9 @@ fn reqwest_client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::er
         ("tagged", TAG),
     ];
 
-    let auth_key;
-    if let Ok(env_var) = std::env::var("SO_NOTIFY_AUTH_KEY") {
-        // This probably deserve a question on SO: while I solved
-        // the issue with env_var lifetime (&str is required in query_args),
-        // the solution looks suboptimal
-        auth_key = env_var;
-        query_args.push(("key", &auth_key));
+    if auth_key != "" {
+        query_args.push(("key", auth_key));
     };
 
-    Ok(client.get(SO_URL).query(&query_args))
+    query_args
 }
