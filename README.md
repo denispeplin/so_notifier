@@ -69,3 +69,4 @@ so to use this app in full, follow these instructions:
 - Provide Dockerfile
 - Add Github CI configurationa and the badge
 - Add instruction for autostarting the app
+- Move the question tag to command-line parameters
