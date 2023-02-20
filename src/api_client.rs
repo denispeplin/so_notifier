@@ -1,4 +1,5 @@
 use core::time;
+use std::env::VarError;
 
 const SO_URL: &str = "https://api.stackexchange.com/2.3/questions";
 // the tag is hardcoded for now to `rust`
@@ -24,13 +25,13 @@ pub fn get_text_response() -> Result<String, Box<dyn std::error::Error>> {
 
 fn reqwest_client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::error::Error>> {
     let client = reqwest::blocking::Client::builder().build()?;
-    let auth_key = std::env::var("SO_NOTIFY_AUTH_KEY").unwrap_or_default();
+    let auth_key = std::env::var("SO_NOTIFY_AUTH_KEY");
     let query_args = query_args(&auth_key);
 
     Ok(client.get(SO_URL).query(&query_args))
 }
 
-fn query_args<'a>(auth_key: &'a String) -> Vec<(&'static str, &'a str)> {
+fn query_args<'a>(auth_key: &'a Result<String, VarError>) -> Vec<(&'static str, &'a str)> {
     let mut query_args = vec![
         ("page", "1"),
         ("pagesize", "10"),
@@ -40,8 +41,8 @@ fn query_args<'a>(auth_key: &'a String) -> Vec<(&'static str, &'a str)> {
         ("tagged", TAG),
     ];
 
-    if auth_key != "" {
-        query_args.push(("key", auth_key));
+    if let Ok(ref auth_key_ref) = auth_key {
+        query_args.push(("key", auth_key_ref));
     };
 
     query_args
