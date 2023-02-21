@@ -64,7 +64,6 @@ so to use this app in full, follow these instructions:
 
 ### TODO
 
-- Add tests
 - Handle more networking errors gracefully
 - Provide Dockerfile
 - Add Github CI configurationa and the badge
