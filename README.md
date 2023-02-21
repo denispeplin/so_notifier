@@ -1,3 +1,5 @@
+[![Rust](https://github.com/denispeplin/so_notifier/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/denispeplin/so_notifier/actions/workflows/rust.yml)
+
 # Stack Overflow notifier
 
 The app notifies about new questions from Stack Overflow.
@@ -66,7 +68,6 @@ so to use this app in full, follow these instructions:
 
 - Handle more networking errors gracefully
 - Provide Dockerfile
-- Add Github CI configurationa and the badge
 - Fix code with `cargo clippy` and add it to CI
 - Add instruction for autostarting the app
 - Move the question tag to command-line parameters
