@@ -12,7 +12,7 @@ const LOOP_TIMEOUT_MINS: u64 = 1;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // it's a trick so on the first run none of
     // the questions would be considered new
-    let mut latest_question_id = u32::MAX;
+    let mut latest_question_id = questions::initial_id();
 
     loop {
         let text_resp = api_client::get_text_response()?;

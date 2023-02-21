@@ -22,6 +22,10 @@ pub fn latest_id(questions: &Vec<Question>) -> u32 {
     questions[0].id
 }
 
+pub fn initial_id() -> u32 {
+    u32::MAX
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -38,6 +42,14 @@ mod tests {
                 ..Default::default()
             }]
         );
+    }
+
+    #[test]
+    fn test_with_initial_id() {
+        let questions = build_questions();
+        let new_questions = list_new(&questions, initial_id());
+
+        assert!(new_questions.is_empty());
     }
 
     #[test]
