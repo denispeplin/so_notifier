@@ -45,6 +45,32 @@ cargo run
 
 See also the next section to run the app with an API key
 
+### Install and run
+
+Being in the project's directory, run
+
+```sh
+cargo install --path .
+```
+
+By default, the binary goes to `.cargo/bin/so_notifier` in your
+home directory.
+
+Run it as any other binary with the following command
+
+```sh
+~/.cargo/bin/so_notifier
+```
+
+Also, don't forget to export the auth key if you want a decent
+API request limit (see
+[The API and throttle](#the-api-and-throttle)).
+
+```sh
+# ~/.profile
+export SO_NOTIFY_AUTH_KEY='<the key>'
+```
+
 ### The API and throttle
 
 The Stackexchange API
