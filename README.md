@@ -68,6 +68,5 @@ so to use this app in full, follow these instructions:
 
 - Handle more networking errors gracefully
 - Provide Dockerfile
-- Fix code with `cargo clippy` and add it to CI
 - Add instruction for autostarting the app
 - Move the question tag to command-line parameters
