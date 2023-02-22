@@ -71,6 +71,17 @@ API request limit (see
 export SO_NOTIFY_AUTH_KEY='<the key>'
 ```
 
+### Autostart
+
+An autostart has to be done after the window system starts, so
+use your window manager autostart facilities.
+Some sample instructions:
+
+- [Gnome](https://www.simplified.guide/gnome/automatically-run-program-on-startup)
+
+Since the binary is placed in a `hidden` directory, you may need
+to copy the path from [Install and run](#install-and-run) section.
+
 ### The API and throttle
 
 The Stackexchange API
@@ -93,6 +104,6 @@ so to use this app in full, follow these instructions:
 ### TODO
 
 - Handle more networking errors gracefully
+- Add logging (replace `println` with logging)
 - Provide Dockerfile
-- Add instruction for autostarting the app
 - Move the question tag to command-line parameters
