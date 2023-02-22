@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Show Rust version
+      run: rustc --version
     - name: Build
       run: cargo build --verbose
     - name: Format
