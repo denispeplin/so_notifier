@@ -31,7 +31,7 @@ fn reqwest_client() -> Result<reqwest::blocking::RequestBuilder, Box<dyn std::er
     Ok(client.get(SO_URL).query(&query_args))
 }
 
-fn query_args<'a>(auth_key: &'a Result<String, VarError>) -> Vec<(&'static str, &'a str)> {
+fn query_args(auth_key: &Result<String, VarError>) -> Vec<(&'static str, &str)> {
     let mut query_args = vec![
         ("page", "1"),
         ("pagesize", "10"),
