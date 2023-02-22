@@ -83,6 +83,22 @@ For example
 grep so_notifier /var/log/syslog | tail
 ```
 
+#### Logging to a separate file
+
+On Linux:
+
+- Add the following line to `/etc/rsyslog.conf`:
+
+```
+local1.info /var/log/so_notifier.log
+```
+
+- Restart the service
+
+```sh
+sudo service rsyslog restart
+```
+
 ### Autostart
 
 An autostart has to be done after the window system starts, so
