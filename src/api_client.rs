@@ -13,12 +13,12 @@ pub fn get_text_response() -> Result<String, Box<dyn std::error::Error>> {
 
         match resp {
             Ok(value) => return Ok(value.text().expect("Can't get text response")),
-            Err(e) if e.is_timeout() => {
-                println!("Request timed out, retrying...");
+            Err(e) => {
+                println!("{e}\n");
+                println!("Request failed, retrying...");
+
                 std::thread::sleep(time::Duration::from_millis(10_000));
-                continue;
             }
-            Err(e) => return Err(Box::new(e)),
         }
     }
 }

@@ -103,7 +103,6 @@ so to use this app in full, follow these instructions:
 
 ### TODO
 
-- Handle more networking errors gracefully
 - Add logging (replace `println` with logging)
 - Provide Dockerfile
 - Move the question tag to command-line parameters
