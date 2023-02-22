@@ -1,6 +1,8 @@
 use core::time;
 use std::env::VarError;
 
+use super::logger::log;
+
 const SO_URL: &str = "https://api.stackexchange.com/2.3/questions";
 // the tag is hardcoded for now to `rust`
 const TAG: &str = "rust";
@@ -14,10 +16,10 @@ pub fn get_text_response() -> Result<String, Box<dyn std::error::Error>> {
         match resp {
             Ok(value) => return Ok(value.text().expect("Can't get text response")),
             Err(e) => {
-                println!("{e}\n");
-                println!("Request failed, retrying...");
+                log(format!("{e}\n"));
+                log("Request failed, retrying...");
 
-                std::thread::sleep(time::Duration::from_millis(10_000));
+                std::thread::sleep(time::Duration::from_millis(60_000));
             }
         }
     }

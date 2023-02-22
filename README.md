@@ -71,6 +71,18 @@ API request limit (see
 export SO_NOTIFY_AUTH_KEY='<the key>'
 ```
 
+### Logging
+
+The installed version uses `syslog` for logging. By default, the
+messages are going to `/var/log/syslog`. You can extract the
+messages using `grep`.
+
+For example
+
+```sh
+grep so_notifier /var/log/syslog | tail
+```
+
 ### Autostart
 
 An autostart has to be done after the window system starts, so
@@ -103,6 +115,5 @@ so to use this app in full, follow these instructions:
 
 ### TODO
 
-- Add logging (replace `println` with logging)
 - Provide Dockerfile
 - Move the question tag to command-line parameters

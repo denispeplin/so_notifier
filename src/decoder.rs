@@ -1,5 +1,6 @@
 use serde::Deserialize;
 
+use super::logger::log;
 use super::questions::Question;
 
 #[derive(Deserialize, Debug)]
@@ -16,8 +17,8 @@ pub fn decode_questions(text_resp: String) -> Root {
 }
 
 fn print_quota(root: &Root) {
-    println!(
+    log(format!(
         "Quota max: {}, quota remaining: {}",
         root.quota_max, root.quota_remaining
-    );
+    ));
 }

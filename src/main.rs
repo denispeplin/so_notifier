@@ -2,6 +2,7 @@ use core::time;
 
 pub mod api_client;
 pub mod decoder;
+pub mod logger;
 pub mod notifications;
 pub mod questions;
 
@@ -24,7 +25,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         latest_question_id = questions::latest_id(&questions);
 
         for q in new_questions {
-            println!("{}\n{}\n{}\n", q.title, q.link, q.id);
+            logger::log(&format!("{}\n{}\n{}\n", q.title, q.link, q.id));
             notifications::desktop::send(&q.title, &q.link);
         }
 
