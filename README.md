@@ -40,8 +40,11 @@ sudo apt install libssl-dev
 Run it from source with Rust installed
 
 ```sh
-cargo run
+cargo run -- stackoverflow_question_tag
 ```
+
+You have to specify a question tag for the questions you are
+interested in. For example, the tag can be `rust`.
 
 See also the next section to run the app with an API key
 
@@ -59,7 +62,7 @@ home directory.
 Run it as any other binary with the following command
 
 ```sh
-~/.cargo/bin/so_notifier
+~/.cargo/bin/so_notifier stackoverflow_question_tag
 ```
 
 Also, don't forget to export the auth key if you want a decent
@@ -132,4 +135,3 @@ so to use this app in full, follow these instructions:
 ### TODO
 
 - Provide Dockerfile
-- Move the question tag to command-line parameters
