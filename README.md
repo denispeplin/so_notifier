@@ -131,7 +131,3 @@ so to use this app in full, follow these instructions:
    is not needed.
    Once it's registered, get `Key` from the page with the application
    credentials.
-
-### TODO
-
-- Provide Dockerfile
