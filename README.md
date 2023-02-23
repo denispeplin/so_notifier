@@ -113,6 +113,10 @@ Some sample instructions:
 Since the binary is placed in a `hidden` directory, you may need
 to copy the path from [Install and run](#install-and-run) section.
 
+For `Gnome`, go to the applications list, search for
+`Startup Applications Preferences`. Create a new startup entry and use
+an absolute path (this is important).
+
 ### The API and throttle
 
 The Stackexchange API
