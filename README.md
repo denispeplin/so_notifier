@@ -135,3 +135,6 @@ so to use this app in full, follow these instructions:
    is not needed.
    Once it's registered, get `Key` from the page with the application
    credentials.
+
+You can find all registered applications on [Your Apps](https://stackapps.com/apps/oauth)
+page.
